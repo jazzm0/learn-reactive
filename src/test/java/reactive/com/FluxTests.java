@@ -78,4 +78,39 @@ public class FluxTests {
                 .expectComplete()
                 .verify();
     }
+
+    @Test
+    public void merge() {
+        Flux<String> left = Flux.just("a", "c", "e");
+        Flux<String> right = Flux.just("b", "d", "f");
+
+        StepVerifier.create(left.mergeOrderedWith(right, String::compareTo).log())
+                .expectNext("a")
+                .expectNext("b")
+                .expectNext("c")
+                .expectNext("d")
+                .expectNext("e")
+                .expectNext("f")
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    public void mergeWithSubscriber() {
+        Flux<String> left = Flux.just("a", "c", "e");
+        Flux<String> right = Flux.just("b", "d", "f");
+
+        left.subscribe(new BatchSubscriber());
+        right.subscribe(new BatchSubscriber());
+
+        StepVerifier.create(left.mergeOrderedWith(right, String::compareTo))
+                .expectNext("a")
+                .expectNext("b")
+                .expectNext("c")
+                .expectNext("d")
+                .expectNext("e")
+                .expectNext("f")
+                .expectComplete()
+                .verify();
+    }
 }
