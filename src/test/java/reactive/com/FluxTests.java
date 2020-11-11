@@ -1,6 +1,4 @@
-package reactive.com;
-
-import org.junit.Test;
+package reactive.com;import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import reactor.util.function.Tuple2;
