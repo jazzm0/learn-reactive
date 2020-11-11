@@ -3,6 +3,8 @@ package reactive.com;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -91,6 +93,21 @@ public class FluxTests {
                 .expectNext("d")
                 .expectNext("e")
                 .expectNext("f")
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    public void zip() {
+        Flux<String> left = Flux.just("a", "c", "e");
+        Flux<String> right = Flux.just("b", "d", "f");
+
+        Flux<Tuple2<String, String>> zip = Flux.zip(left, right);
+
+        StepVerifier.create(zip)
+                .expectNext(Tuples.of("a", "b"))
+                .expectNext(Tuples.of("c", "d"))
+                .expectNext(Tuples.of("e", "f"))
                 .expectComplete()
                 .verify();
     }
